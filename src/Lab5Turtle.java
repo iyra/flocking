@@ -7,6 +7,7 @@ public class Lab5Turtle {
 	
 	CopyOnWriteArrayList<DynamicTurtle> turtles; 
 	
+	
 	public Lab5Turtle() {
 		turtles = new CopyOnWriteArrayList<DynamicTurtle>();
 		
@@ -18,7 +19,7 @@ public class Lab5Turtle {
 		frame.setVisible(true);
 		frame.add(canvas);
 		
-		turtles.add(new DynamicTurtle(canvas, 300,100)); 
+		//turtles.add(new DynamicTurtle(canvas, 300,100)); 
 		
 		for(int i = 0; i < 10; i++) {
 			CartesianCoordinate position = canvas.randomCoordinate();
@@ -31,6 +32,7 @@ public class Lab5Turtle {
 		// game loop
 		while (continueRunning) {
 			for(DynamicTurtle t : turtles) {
+				t.cohere(turtles, 900, 0.9, turtles.indexOf(t));
 				t.update(deltaTime);
 			}
 			for(DynamicTurtle t : turtles) {

@@ -31,7 +31,7 @@ public class Turtle {
 	
 		CartesianCoordinate new_position = new CartesianCoordinate(end_x, end_y);
 		
-		System.out.println("end point is "+new_position);
+		//System.out.println("end point is "+new_position);
 		
 		if(penIsDown) {
 			myCanvas.drawLineBetweenPoints(position, new_position, lineColor);
@@ -68,7 +68,7 @@ public class Turtle {
 		if(angle > 360){
 			angle = angle-360;
 		}
-		System.out.println("angle is now "+angle);
+		//System.out.println("angle is now "+angle);
 	}
 
 	/**
