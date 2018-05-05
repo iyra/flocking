@@ -51,6 +51,8 @@ public class Turtle {
 		putPenUp();
 	}
 	
+	
+	
 	public void undraw() {
 		for(int i = 0; i < 3; i++){
 			myCanvas.removeMostRecentLine();
@@ -69,6 +71,14 @@ public class Turtle {
 			angle = angle-360;
 		}
 		//System.out.println("angle is now "+angle);
+	}
+	
+	public double getAngle() {
+		return angle;
+	}
+	
+	public void setAngle(double a) {
+		angle = a;
 	}
 
 	/**
