@@ -8,6 +8,10 @@ import geometry.Rect;
 import geometry.Circle;
 import geometry.Food;
 import java.awt.Color;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 public class Lab5Turtle {
 	
 	CopyOnWriteArrayList<SimObject> simObjects; 
@@ -52,6 +56,27 @@ public class Lab5Turtle {
 				t.update(deltaTime);
 				Utils.pause(deltaTime);
 			}*/
+		}
+	}
+	
+	private void ReadSettings(String filename) {
+		try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
+		    String line;
+		    while ((line = br.readLine()) != null) {
+		    	if (line.contains("=")) {
+		    		String[] parts = line.split("=");
+		    		if(parts.length > 2) {
+		    			throw new IllegalArgumentException("Line `" + line + "` is not a valid setting.");
+		    		}
+		    		
+		    	} else {
+		    	    throw new IllegalArgumentException("Line `" + line + "` is not a valid setting.");
+		    	}
+		    }
+		} catch(FileNotFoundException e) {
+			
+		} catch(IOException e) {
+			
 		}
 	}
 
