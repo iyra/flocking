@@ -14,14 +14,14 @@ public class Lab5Turtle {
 		JFrame frame = new JFrame();
 		Canvas canvas = new Canvas();
 		frame.setTitle("Turtle Frame");
-		frame.setSize(1920, 1080);
+		frame.setSize(1000, 800);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 		frame.add(canvas);
 		
 		turtles.add(new DynamicTurtle(canvas, 300,100)); 
 		
-		for(int i = 0; i < 20; i++) {
+		for(int i = 0; i < 10; i++) {
 			CartesianCoordinate position = canvas.randomCoordinate();
 			turtles.add(new DynamicTurtle(canvas, position.getX(), position.getY()));
 		}
@@ -32,8 +32,8 @@ public class Lab5Turtle {
 		// game loop
 		while (continueRunning) {
 			for(DynamicTurtle t : turtles) {
-				t.cohere(turtles, 50, 0.5, turtles.indexOf(t));
-				t.align(turtles, 50, 0.1, turtles.indexOf(t));
+				t.separate(turtles, 300, 1, turtles.indexOf(t));
+				//t.align(turtles, 200, 0.5, turtles.indexOf(t));
 				System.out.println("updating");
 				t.update(deltaTime);
 			}

@@ -26,7 +26,7 @@ public class CartesianCoordinate {
 	public int turnAngle(CartesianCoordinate newPos) {
 		double diff_y = yPosition-newPos.getY();
 		double diff_x = xPosition-newPos.getX();
-		double t_angle = 90 + Math.toDegrees(Math.atan(diff_y/diff_x));
+		double t_angle = Math.toDegrees(Math.atan2(diff_y, diff_x));
 		return (int)t_angle;
 	}
 	

@@ -21,7 +21,7 @@ public class DynamicTurtle extends Turtle {
 		move(getPosition().lengthTo(newPos), Color.black);
 		
 		/* after moving to the initial position, give it a random angle  */
-		turn(randomAngle());
+		//turn(randomAngle());
 		//undraw();
 		//draw();
 	}
@@ -53,32 +53,71 @@ public class DynamicTurtle extends Turtle {
 	}
 	
 	public double generalDirection(CopyOnWriteArrayList<DynamicTurtle> turtles) {
-		double x = 0;
+		/*double x = 0;
 		double y = 0;
 		for(DynamicTurtle t : turtles) {
 			x += Math.cos(Math.toRadians(t.getAngle()));
 			y += Math.sin(Math.toRadians(t.getAngle()));
 		}
-		return Math.toDegrees(Math.atan2(y, x));
+		return Math.toDegrees(Math.atan2(y, x));*/
+		double total = 0;
+		for(DynamicTurtle t : turtles) {
+			total += t.getAngle();
+		}
+		return total/turtles.size();
 	}
 	
 	public void cohere(CopyOnWriteArrayList<DynamicTurtle> turtles, int radius, double k_c, int index) {
-		DynamicTurtle focusTurtle = this;
+		/* includedTurtles will store the turtles within the radius */
 		CopyOnWriteArrayList<DynamicTurtle> includedTurtles = new CopyOnWriteArrayList<DynamicTurtle>();
+		
+		/* go through all the turtles */
 		for(DynamicTurtle t : turtles) {
-			LineSegment ls = new LineSegment(focusTurtle.getPosition(), t.getPosition());
-			if((ls.length() <= radius) && (ls.length() > 30)) {
+			/* length from this turtle to the turtle in question */
+			LineSegment ls = new LineSegment(getPosition(), t.getPosition());
+			if((ls.length() <= radius) && (ls.length() > 0)) {
+				/* if the length of the line between this turtle and the other is <= radius
+				 * and the length is > 0 (i.e we don't include our own turtle) then cohere it
+				 */
 				System.out.println(turtles.indexOf(t));
 				includedTurtles.add(t);
 			}
 		}
+		System.out.println("cohering "+includedTurtles.size()+ " turtles");
 		if(includedTurtles.size() > 0) {
+			
 			CartesianCoordinate centerPosition = centerOfMass(includedTurtles);
 			
+			/* find out the angle needed to turn to this coordinate */
+			double phi = 180 - getAngle() - Math.toDegrees(Math.atan2((centerPosition.getX() - getPosition().getX()), (centerPosition.getY() - getPosition().getY())));
+			turn((int)(k_c * phi)/20);
+		}
+	}
+	
+	public void separate(CopyOnWriteArrayList<DynamicTurtle> turtles, int radius, double k_c, int index) {
+		/* includedTurtles will store the turtles within the radius */
+		CopyOnWriteArrayList<DynamicTurtle> includedTurtles = new CopyOnWriteArrayList<DynamicTurtle>();
+		
+		/* go through all the turtles */
+		for(DynamicTurtle t : turtles) {
+			/* length from this turtle to the turtle in question */
+			LineSegment ls = new LineSegment(getPosition(), t.getPosition());
+			if((ls.length() <= radius) && (ls.length() > 0)) {
+				/* if the length of the line between this turtle and the other is <= radius
+				 * and the length is > 0 (i.e we don't include our own turtle) then cohere it
+				 */
+				System.out.println(turtles.indexOf(t));
+				includedTurtles.add(t);
+			}
+		}
+		System.out.println("cohering "+includedTurtles.size()+ " turtles");
+		if(includedTurtles.size() > 0) {
 			
-			int angleToTurn = getPosition().turnAngle(centerPosition)/20;
-			System.out.println("turning "+index+" to "+angleToTurn+" and the length is "+includedTurtles.size()+"index is"+index);
-			turn((int)(k_c * angleToTurn));
+			CartesianCoordinate centerPosition = centerOfMass(includedTurtles);
+			
+			/* find out the angle needed to turn to this coordinate */
+			double phi = -getAngle() - (180 - getAngle() - Math.toDegrees(Math.atan2((centerPosition.getX() - getPosition().getX()), (centerPosition.getY() - getPosition().getY()))));
+			turn((int)(k_c * phi)/20);
 		}
 	}
 	
@@ -94,12 +133,14 @@ public class DynamicTurtle extends Turtle {
 			}
 		}
 		if(includedTurtles.size() > 0) {
-			double dir = (360-focusTurtle.getAngle()) + generalDirection(includedTurtles);
+			double dir = generalDirection(includedTurtles)-getAngle();
 			System.out.println("direction is "+generalDirection(includedTurtles));
 			
 			//System.out.println("turning "+index+" to "+angleToTurn+" and the length is "+includedTurtles.size()+"index is"+index);
 			//turn((int)(k_c * dir/20));
-			setAngle(k_c * dir/20);
+			turn((int)(k_c * dir));
+			System.out.println("angle is "+((k_c * dir)));
+
 		}
 	}
 	
