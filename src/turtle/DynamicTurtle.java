@@ -5,9 +5,10 @@ import drawing.Canvas;
 import geometry.CartesianCoordinate;
 import geometry.LineSegment;
 import java.util.concurrent.CopyOnWriteArrayList;
+import geometry.SimObject;
 
 public class DynamicTurtle extends Turtle {
-	private int speed = 400;
+	private int speed = 200;
 	public DynamicTurtle(Canvas canvas) {
 		super(canvas);
 		//draw();
@@ -29,15 +30,40 @@ public class DynamicTurtle extends Turtle {
 	public int randomAngle() {
 		return (int)Math.random()*360;
 	}
+	
+	public int getSpeed() {
+		return speed;
+	}
+	
+	public void setSpeed(int newSpeed) {
+		speed = newSpeed;
+	}
 
 	/*private void draw() {
 		// TODO Auto-generated method stub
 	}*/
 	
-	public void update(int t) {
+	int doesCollide(CopyOnWriteArrayList<SimObject> simObjects, int distance) {
+		for(SimObject obj : simObjects) {
+			if(obj.containsPoint(nextCoordinate(distance))) {
+				System.out.println("found");
+				return simObjects.indexOf(obj);
+			}
+		}
+		return -1;
+	}
+	
+	public void update(int t, CopyOnWriteArrayList<SimObject> simObjects, int index) {
 		//undraw();
-		move(speed * t/1000, Color.black);
-		System.out.println("moving by "+speed*(t/1000));
+		cohere(simObjects, index);
+		int detection = doesCollide(simObjects, speed * t/1000);
+		if(detection == -1) {
+			move(speed * t/1000, Color.black);
+		} else {
+			simObjects.get(detection).turtleCollision(this, simObjects);
+		}
+		//move(speed * t/1000, Color.black);
+		//System.out.println("moving by "+speed*(t/1000));
 		wrapPosition();
 		//draw();
 	}
@@ -67,14 +93,17 @@ public class DynamicTurtle extends Turtle {
 		return total/turtles.size();
 	}
 	
-	public void cohere(CopyOnWriteArrayList<DynamicTurtle> turtles, int radius, double k_c, int index) {
+	public void cohere(CopyOnWriteArrayList<SimObject> simObjects, int index) {
+		int radius = 400;
+		double k_c = 1; 
 		double sum_x = 0;
 		double sum_y = 0;
 		double sum_angle = 0;
 		int count = 0;
-		/* go through all the turtles */
-		for(int c = 0; c < turtles.size(); c++) {
-			DynamicTurtle t = turtles.get(c);
+		/* go through all the simObjects */
+		for(int c = 0; c < simObjects.size(); c++) {
+			SimObject t = simObjects.get(c);
+			//System.out.println("type: "+t);
 			if(c != index) {
 				if(Math.hypot(this.getPosition().getX() - t.getPosition().getX(), getPosition().getY() - t.getPosition().getY()) < radius) {
 					sum_x += t.getPosition().getX();
@@ -84,7 +113,7 @@ public class DynamicTurtle extends Turtle {
 				}
 			}
 		}
-		System.out.println("count is "+count);
+		//System.out.println("count is "+count);
 		double avg_x = sum_x/count;
 		double avg_y = sum_y/count;
 		
@@ -114,11 +143,11 @@ public class DynamicTurtle extends Turtle {
 				/* if the length of the line between this turtle and the other is <= radius
 				 * and the length is > 0 (i.e we don't include our own turtle) then cohere it
 				 */
-				System.out.println(turtles.indexOf(t));
+				//System.out.println(turtles.indexOf(t));
 				includedTurtles.add(t);
 			}
 		}
-		System.out.println("cohering "+includedTurtles.size()+ " turtles");
+		//System.out.println("cohering "+includedTurtles.size()+ " turtles");
 		if(includedTurtles.size() > 0) {
 			
 			CartesianCoordinate centerPosition = centerOfMass(includedTurtles);
@@ -137,18 +166,18 @@ public class DynamicTurtle extends Turtle {
 		for(DynamicTurtle t : turtles) {
 			LineSegment ls = new LineSegment(focusTurtle.getPosition(), t.getPosition());
 			if((ls.length() <= radius) && (ls.length() > 0)) {
-				System.out.println(turtles.indexOf(t));
+				//System.out.println(turtles.indexOf(t));
 				includedTurtles.add(t);
 			}
 		}
 		if(includedTurtles.size() > 0) {
 			double dir = generalDirection(includedTurtles)-getAngle();
-			System.out.println("direction is "+generalDirection(includedTurtles));
+			//System.out.println("direction is "+generalDirection(includedTurtles));
 			
 			//System.out.println("turning "+index+" to "+angleToTurn+" and the length is "+includedTurtles.size()+"index is"+index);
 			//turn((int)(k_c * dir/20));
 			turn((int)(k_c * dir));
-			System.out.println("angle is "+((k_c * dir)));
+			//System.out.println("angle is "+((k_c * dir)));
 
 		}
 	}

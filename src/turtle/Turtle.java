@@ -4,18 +4,27 @@ import drawing.Canvas;
 import geometry.CartesianCoordinate;
 import java.awt.Paint;
 import java.awt.Color;
-public class Turtle {
-	private Canvas myCanvas;
+import geometry.SimObject;
+
+public class Turtle extends SimObject {
+	
 	private boolean penIsDown;
 	private double angle;
-	private CartesianCoordinate position;
+	//private CartesianCoordinate position;
 	
 	public Turtle(Canvas myCanvas) {
-		this.myCanvas = myCanvas;
+		this.canvas = myCanvas;
 		// TODO Auto-generated constructor stub
-		position = new CartesianCoordinate(100,100);
+		setPosition(new CartesianCoordinate(100,100));
 		penIsDown = false;
 		angle = 0;
+	}
+	
+	public CartesianCoordinate nextCoordinate(int distance) {
+		double end_x = (distance * Math.sin(Math.toRadians(angle)))+position.getX();
+		double end_y = -(distance * Math.cos(Math.toRadians(angle)))+position.getY();
+	
+		return new CartesianCoordinate(end_x, end_y);
 	}
 
 	/**
@@ -26,15 +35,13 @@ public class Turtle {
 	 */
 	public void move(int i, Paint lineColor) {
 		// TODO Auto-generated method stub
-		double end_x = (i * Math.sin(Math.toRadians(angle)))+position.getX();
-		double end_y = -(i * Math.cos(Math.toRadians(angle)))+position.getY();
-	
-		CartesianCoordinate new_position = new CartesianCoordinate(end_x, end_y);
+		
+		CartesianCoordinate new_position = nextCoordinate(i);
 		
 		//System.out.println("end point is "+new_position);
 		
 		if(penIsDown) {
-			myCanvas.drawLineBetweenPoints(position, new_position, lineColor);
+			canvas.drawLineBetweenPoints(getPosition(), new_position, lineColor);
 		}
 		position = new_position;
 	}
@@ -60,7 +67,7 @@ public class Turtle {
 	
 	public void undraw() {
 		for(int i = 0; i < 4; i++){
-			myCanvas.removeMostRecentLine();
+			canvas.removeMostRecentLine();
 		}
 	}
 
@@ -104,22 +111,19 @@ public class Turtle {
 		penIsDown = true;
 	}
 
-	public CartesianCoordinate getPosition() {
-		return position;
-	}
 	
 	public void wrapPosition() {
-		if(position.getX() >= myCanvas.getWidth()) {
+		if(position.getX() >= canvas.getWidth()) {
 			position.setX(0);
 		}
-		if(position.getY() >= myCanvas.getHeight()) {
+		if(position.getY() >= canvas.getHeight()) {
 			position.setY(0);
 		}
 		if(position.getY() < 0) {
-			position.setY(myCanvas.getHeight());
+			position.setY(canvas.getHeight());
 		}
 		if(position.getX() < 0) {
-			position.setX(myCanvas.getWidth());
+			position.setX(canvas.getWidth());
 		}
 	}
 }

@@ -14,6 +14,7 @@ import geometry.CartesianCoordinate;
 import geometry.LineSegment;
 import java.awt.Color;
 import java.awt.Paint;
+import geometry.ObjectShape;
 /**
  * <h2>Canvas</h2> This class represents a canvas object that can be drawn to with various line segments.
  */
@@ -21,6 +22,7 @@ public class Canvas extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private int xSize, ySize;
 	private CopyOnWriteArrayList<LineSegment> lines;
+	private CopyOnWriteArrayList<ObjectShape> shapes;
 	private final static int DEFAULT_X = 800;
 	private final static int DEFAULT_Y = 600;
 
@@ -44,6 +46,7 @@ public class Canvas extends JPanel {
 		ySize = y;
 		setupCanvas();
 		lines = new CopyOnWriteArrayList<LineSegment>();
+		shapes = new CopyOnWriteArrayList<ObjectShape>();
 	}
 
 	private void setupCanvas() {
@@ -68,6 +71,29 @@ public class Canvas extends JPanel {
 			g2.setPaint(line.getLineColor());
 			g2.draw(new Line2D.Double(line.getStartPoint().getX(), line.getStartPoint().getY(), line.getEndPoint().getX(),
 					line.getEndPoint().getY()));
+		}
+		
+		for(ObjectShape shape : shapes) {
+			//System.out.println("making shape");
+			shape.drawShape(g2);
+		}
+	}
+	
+	public void drawShape(ObjectShape shape) {
+		shapes.add(shape);
+		repaint();
+	}
+	
+	public void drawShapes(ObjectShape[] shapeArray) {
+		for (ObjectShape shape : shapeArray) {
+			shapes.add(shape);
+		}
+		repaint();
+	}
+	
+	public void removeMostRecentShape() {
+		if(shapes.size() > 0) {
+			shapes.remove(shapes.size() - 1);
 		}
 	}
 

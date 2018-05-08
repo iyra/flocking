@@ -3,13 +3,16 @@ import javax.swing.JFrame;
 import java.util.concurrent.CopyOnWriteArrayList; 
 import turtle.DynamicTurtle;
 import geometry.CartesianCoordinate;
+import geometry.SimObject;
+import geometry.Rect;
+import geometry.Food;
 public class Lab5Turtle {
 	
-	CopyOnWriteArrayList<DynamicTurtle> turtles; 
+	CopyOnWriteArrayList<SimObject> simObjects; 
 	
 	
 	public Lab5Turtle() {
-		turtles = new CopyOnWriteArrayList<DynamicTurtle>();
+		simObjects = new CopyOnWriteArrayList<SimObject>();
 		
 		JFrame frame = new JFrame();
 		Canvas canvas = new Canvas();
@@ -19,11 +22,11 @@ public class Lab5Turtle {
 		frame.setVisible(true);
 		frame.add(canvas);
 		
-		turtles.add(new DynamicTurtle(canvas, 300,100)); 
-		
+		simObjects.add(new DynamicTurtle(canvas, 300,100)); 
+		simObjects.add(new Food(new Rect(canvas, new CartesianCoordinate(200,200), 100, 200), 900));
 		for(int i = 0; i < 10; i++) {
 			CartesianCoordinate position = canvas.randomCoordinate();
-			turtles.add(new DynamicTurtle(canvas, position.getX(), position.getY()));
+			simObjects.add(new DynamicTurtle(canvas, position.getX(), position.getY()));
 		}
 		
 		// milliseconds
@@ -31,19 +34,20 @@ public class Lab5Turtle {
 		boolean continueRunning = true;
 		// game loop
 		while (continueRunning) {
-			for(int c = 0; c < turtles.size(); c++) {
-				turtles.get(c).cohere(turtles, 400, 1, c);
+			
+			for(int c = 0; c < simObjects.size(); c++) {
+				//simObjects.get(c).cohere(simObjects, c);
 				//t.align(turtles, 200, 0.5, turtles.indexOf(t));
-				System.out.println("updating");
-				turtles.get(c).update(deltaTime);
+				//System.out.println("updating");
+				simObjects.get(c).update(deltaTime, simObjects, c);
 				//t.turn(90);
 			}
-			for(DynamicTurtle t : turtles) {
+			for(SimObject t : simObjects) {
 				t.draw();
 			}
 			Utils.pause(deltaTime);
 
-			for(DynamicTurtle t : turtles) {
+			for(SimObject t : simObjects) {
 				t.undraw();
 			}
 			/*for(DynamicTurtle t : turtles ) {
