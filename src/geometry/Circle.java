@@ -1,46 +1,43 @@
 package geometry;
 import java.awt.Graphics2D;
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.Paint;
 import geometry.CartesianCoordinate;
 import drawing.Canvas;
 
-public class Rect extends ObjectShape {
-	private int width;
-	private int height;
+public class Circle extends ObjectShape {
+	private int radius;
 	
-	public Rect(Canvas canvas, CartesianCoordinate pos, int width, int height, Paint colour) {
+	public Circle(Canvas canvas, CartesianCoordinate pos, int radius, Paint colour) {
 		super.position = pos;
 		this.canvas = canvas;
-		this.width = width;
-		this.height = height;
+		this.radius = radius;
 		this.colour = colour;
 	}
 	
 	public void drawShape(Graphics2D g) {
 		//System.out.println("x = " + getPosition().getX());
 		g.setPaint(colour);
-		g.draw(new Rectangle2D.Double(
+		g.draw(new Ellipse2D.Double(
 				getPosition().getX(),
 				getPosition().getY(),
-				width, height));	
+				radius, radius));	
 	}
 	
 	public boolean containsPoint(CartesianCoordinate point) {
-		Rectangle2D myRect = new Rectangle2D.Double(
+		Ellipse2D myCircle = new Ellipse2D.Double(
 				getPosition().getX(),
 				getPosition().getY(),
-				width, height);
-		if(myRect.contains(new Point2D.Double(point.getX(), point.getY()))) {
+				radius, radius);
+		if(myCircle.contains(new Point2D.Double(point.getX(), point.getY()))) {
 			return true;
 		}
 		return false;
 	}
 	
 	public void scaleShape(float factor) {
-		width = (int)(factor * width);
-		height = (int)(factor * height);
+		radius = (int)(factor * radius);
 	}
 	
 }

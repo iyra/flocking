@@ -27,7 +27,9 @@ public abstract class SimObject {
 	public void draw() {}
 	public void undraw() {}
 	
-	
+	public void scaleShape(float factor) {
+		
+	}
 	
 	public boolean containsPoint(CartesianCoordinate p) {
 		return false;

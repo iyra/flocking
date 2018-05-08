@@ -5,7 +5,9 @@ import turtle.DynamicTurtle;
 import geometry.CartesianCoordinate;
 import geometry.SimObject;
 import geometry.Rect;
+import geometry.Circle;
 import geometry.Food;
+import java.awt.Color;
 public class Lab5Turtle {
 	
 	CopyOnWriteArrayList<SimObject> simObjects; 
@@ -23,7 +25,7 @@ public class Lab5Turtle {
 		frame.add(canvas);
 		
 		simObjects.add(new DynamicTurtle(canvas, 300,100)); 
-		simObjects.add(new Food(new Rect(canvas, new CartesianCoordinate(200,200), 100, 200), 900));
+		simObjects.add(new Food(new Circle(canvas, new CartesianCoordinate(200,200), 100, Color.cyan), 900, 3));
 		for(int i = 0; i < 10; i++) {
 			CartesianCoordinate position = canvas.randomCoordinate();
 			simObjects.add(new DynamicTurtle(canvas, position.getX(), position.getY()));
@@ -36,11 +38,7 @@ public class Lab5Turtle {
 		while (continueRunning) {
 			
 			for(int c = 0; c < simObjects.size(); c++) {
-				//simObjects.get(c).cohere(simObjects, c);
-				//t.align(turtles, 200, 0.5, turtles.indexOf(t));
-				//System.out.println("updating");
 				simObjects.get(c).update(deltaTime, simObjects, c);
-				//t.turn(90);
 			}
 			for(SimObject t : simObjects) {
 				t.draw();

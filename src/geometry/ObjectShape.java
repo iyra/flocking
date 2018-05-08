@@ -31,4 +31,7 @@ public abstract class ObjectShape extends SimObject {
 		canvas.removeMostRecentShape();
 	}
 	
+	public boolean containsPoint(CartesianCoordinate p) {
+		return false;
+	}
 }
