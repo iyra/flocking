@@ -31,11 +31,12 @@ public class Lab5Turtle {
 		boolean continueRunning = true;
 		// game loop
 		while (continueRunning) {
-			for(DynamicTurtle t : turtles) {
-				t.separate(turtles, 300, 1, turtles.indexOf(t));
+			for(int c = 0; c < turtles.size(); c++) {
+				turtles.get(c).cohere(turtles, 400, 1, c);
 				//t.align(turtles, 200, 0.5, turtles.indexOf(t));
 				System.out.println("updating");
-				t.update(deltaTime);
+				turtles.get(c).update(deltaTime);
+				//t.turn(90);
 			}
 			for(DynamicTurtle t : turtles) {
 				t.draw();

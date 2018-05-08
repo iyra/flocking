@@ -62,7 +62,7 @@ public class Canvas extends JPanel {
 		super.paint(g);
 		Graphics2D g2 = (Graphics2D)g;
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); // Smoother lines
-		g2.setStroke(new BasicStroke(2));
+		g2.setStroke(new BasicStroke(1));
 		
 		for (LineSegment line : lines) {
 			g2.setPaint(line.getLineColor());

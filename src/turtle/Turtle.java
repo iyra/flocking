@@ -40,6 +40,8 @@ public class Turtle {
 	}
 	
 	public void draw() {
+		putPenDown();
+		move((int)(15 * Math.sqrt(3)/2), Color.blue);
 		turn(150);
 		putPenDown();
 		move(30, Color.red);
@@ -47,14 +49,17 @@ public class Turtle {
 		move(30, Color.black);
 		turn(180-60);
 		move(30, Color.red);
-		turn(-30);
+		turn(180-30);
+		putPenUp();
+		move((int)(15 *Math.sqrt(3)/2), Color.black);
+		turn(180);
 		putPenUp();
 	}
 	
 	
 	
 	public void undraw() {
-		for(int i = 0; i < 3; i++){
+		for(int i = 0; i < 4; i++){
 			myCanvas.removeMostRecentLine();
 		}
 	}
@@ -67,10 +72,12 @@ public class Turtle {
 	public void turn(int i) {
 		// TODO Auto-generated method stub
 		angle += i;
-		if(angle > 360){
+		while(angle > 180){
 			angle = angle-360;
 		}
-		//System.out.println("angle is now "+angle);
+		while(angle < -180){
+			angle = angle+360;
+		}
 	}
 	
 	public double getAngle() {

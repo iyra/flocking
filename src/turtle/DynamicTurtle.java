@@ -46,10 +46,10 @@ public class DynamicTurtle extends Turtle {
 		int totalX = 0;
 		int totalY = 0;
 		for(DynamicTurtle t : turtles) {
-			totalX += t.getPosition().getX() - getPosition().getX();
-			totalY += t.getPosition().getY() - getPosition().getY();
+			totalX += t.getPosition().getX();
+			totalY += t.getPosition().getY();
 		}
-		return new CartesianCoordinate(totalX/turtles.size(), totalY/turtles.size());
+		return new CartesianCoordinate((totalX/turtles.size()), (totalY/turtles.size()));
 	}
 	
 	public double generalDirection(CopyOnWriteArrayList<DynamicTurtle> turtles) {
@@ -68,30 +68,38 @@ public class DynamicTurtle extends Turtle {
 	}
 	
 	public void cohere(CopyOnWriteArrayList<DynamicTurtle> turtles, int radius, double k_c, int index) {
-		/* includedTurtles will store the turtles within the radius */
-		CopyOnWriteArrayList<DynamicTurtle> includedTurtles = new CopyOnWriteArrayList<DynamicTurtle>();
-		
+		double sum_x = 0;
+		double sum_y = 0;
+		double sum_angle = 0;
+		int count = 0;
 		/* go through all the turtles */
-		for(DynamicTurtle t : turtles) {
-			/* length from this turtle to the turtle in question */
-			LineSegment ls = new LineSegment(getPosition(), t.getPosition());
-			if((ls.length() <= radius) && (ls.length() > 0)) {
-				/* if the length of the line between this turtle and the other is <= radius
-				 * and the length is > 0 (i.e we don't include our own turtle) then cohere it
-				 */
-				System.out.println(turtles.indexOf(t));
-				includedTurtles.add(t);
+		for(int c = 0; c < turtles.size(); c++) {
+			DynamicTurtle t = turtles.get(c);
+			if(c != index) {
+				if(Math.hypot(this.getPosition().getX() - t.getPosition().getX(), getPosition().getY() - t.getPosition().getY()) < radius) {
+					sum_x += t.getPosition().getX();
+					sum_y += t.getPosition().getY();
+					sum_angle += t.getAngle();
+					count++;
+				}
 			}
 		}
-		System.out.println("cohering "+includedTurtles.size()+ " turtles");
-		if(includedTurtles.size() > 0) {
-			
-			CartesianCoordinate centerPosition = centerOfMass(includedTurtles);
-			
-			/* find out the angle needed to turn to this coordinate */
-			double phi = 180 - getAngle() - Math.toDegrees(Math.atan2((centerPosition.getX() - getPosition().getX()), (centerPosition.getY() - getPosition().getY())));
-			turn((int)(k_c * phi)/20);
-		}
+		System.out.println("count is "+count);
+		double avg_x = sum_x/count;
+		double avg_y = sum_y/count;
+		
+		double pos_diff_x = avg_x - getPosition().getX();
+		double pos_diff_y = getPosition().getY() - avg_y;
+		
+		double pos_diff_x_s = avg_x + getPosition().getX();
+		double pos_diff_y_s = getPosition().getY() + avg_y;
+		
+		double avg_angle = sum_angle/count;
+		
+		double alignmentAngle = avg_angle - getAngle();
+		double cohesionAngle = Math.toDegrees(Math.atan2(pos_diff_y, pos_diff_x)) - getAngle();
+		double separationAngle = -cohesionAngle+180;
+		turn((int)((separationAngle)/20));
 	}
 	
 	public void separate(CopyOnWriteArrayList<DynamicTurtle> turtles, int radius, double k_c, int index) {
@@ -116,8 +124,9 @@ public class DynamicTurtle extends Turtle {
 			CartesianCoordinate centerPosition = centerOfMass(includedTurtles);
 			
 			/* find out the angle needed to turn to this coordinate */
-			double phi = -getAngle() - (180 - getAngle() - Math.toDegrees(Math.atan2((centerPosition.getX() - getPosition().getX()), (centerPosition.getY() - getPosition().getY()))));
+			double phi = 360 - getAngle() - Math.toDegrees(Math.atan2((centerPosition.getX() - getPosition().getX()), (centerPosition.getY() - getPosition().getY())));
 			turn((int)(k_c * phi)/20);
+			//turn(180/20);
 		}
 	}
 	
