@@ -4,24 +4,17 @@ import java.awt.BasicStroke;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.geom.Line2D;
-
 import java.util.concurrent.CopyOnWriteArrayList;
-
 import javax.swing.JPanel;
-
-import geometry.CartesianCoordinate;
-import geometry.LineSegment;
-import java.awt.Color;
-import java.awt.Paint;
 import geometry.ObjectShape;
+import geometry.Vector;
+
 /**
  * <h2>Canvas</h2> This class represents a canvas object that can be drawn to with various line segments.
  */
 public class Canvas extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private int xSize, ySize;
-	private CopyOnWriteArrayList<LineSegment> lines;
 	private CopyOnWriteArrayList<ObjectShape> shapes;
 	private final static int DEFAULT_X = 800;
 	private final static int DEFAULT_Y = 600;
@@ -45,7 +38,6 @@ public class Canvas extends JPanel {
 		xSize = x;
 		ySize = y;
 		setupCanvas();
-		lines = new CopyOnWriteArrayList<LineSegment>();
 		shapes = new CopyOnWriteArrayList<ObjectShape>();
 	}
 
@@ -67,11 +59,6 @@ public class Canvas extends JPanel {
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); // Smoother lines
 		g2.setStroke(new BasicStroke(1));
 		
-		for (LineSegment line : lines) {
-			g2.setPaint(line.getLineColor());
-			g2.draw(new Line2D.Double(line.getStartPoint().getX(), line.getStartPoint().getY(), line.getEndPoint().getX(),
-					line.getEndPoint().getY()));
-		}
 		
 		for(ObjectShape shape : shapes) {
 			//System.out.println("making shape");
@@ -97,65 +84,10 @@ public class Canvas extends JPanel {
 		}
 	}
 
-	/**
-	 * Draws a line between 2 CartesianCoordinates to the canvas.
-	 * 
-	 * @param startPoint
-	 *            Starting coordinate.
-	 * @param endPoint
-	 *            Ending coordinate.
-	 */
-	public void drawLineBetweenPoints(CartesianCoordinate startPoint, CartesianCoordinate endPoint, Paint c) {
-		LineSegment ls = new LineSegment(startPoint, endPoint);
-		ls.setLineColor(c);
-		lines.add(ls);
-		repaint();
-	}
-
-	/**
-	 * Draws a line segment to the canvas.
-	 * 
-	 * @param lineSegment
-	 *            The LineSegment to draw.
-	 */
-	public void drawLineSegment(LineSegment lineSegment, Paint c) {
-		lines.add(lineSegment);
-		repaint();
-	}
-
-	/**
-	 * Draws multiple line segments to the canvas.
-	 * 
-	 * @param lineSegments
-	 *            An array of LineSegment.
-	 */
-	public void drawLineSegments(LineSegment[] lineSegments) {
-		for (LineSegment thisLineSegment : lineSegments) {
-			lines.add(thisLineSegment);
-		}
-		repaint();
-	}
-
-	/**
-	 * Removes the most recently added line from the drawing.
-	 */
-	public void removeMostRecentLine() {
-		if(lines.size() > 0) {
-			lines.remove(lines.size() - 1);
-		}
-	}
-
-	/**
-	 * Clears the canvas of all drawing.
-	 */
-	public void clear() {
-		lines.clear();
-		repaint();
-	}
 	
-	public CartesianCoordinate randomCoordinate() {
+	public Vector randomVector() {
 		int randomx = (int) (Math.random()*(this.getWidth()-30));
 		int randomy = (int) (Math.random()*(this.getHeight()-30));
-		return new CartesianCoordinate(randomx, randomy);
+		return new Vector(randomx, randomy);
 	}
 }
